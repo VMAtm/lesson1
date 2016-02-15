@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Business card</string>
     <string name="title_activity_test_layout" translatable="false">TestLayout</string>
-    <string name="surname" />
+    <string name="surname" >Veselov</string>
     <string name="firstname">Mikhail A</string>
+    <string name="BusinessCardURL" translatable="false">https://habrastorage.org/files/b18/c71/5cd/b18c715cd3ef4f3db23ac4065797d5e8</string>
 </resources>

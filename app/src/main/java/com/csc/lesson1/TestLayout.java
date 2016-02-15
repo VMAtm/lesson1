@@ -1,11 +1,17 @@
 package com.csc.lesson1;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
+import android.widget.ImageView;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class TestLayout extends AppCompatActivity {
 
@@ -13,17 +19,50 @@ public class TestLayout extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        new ImageDownloader((ImageView) findViewById(R.id.businessImage))
+                .execute(String.valueOf(R.string.BusinessCardURL));
     }
 
+    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
+        private final ImageView _target;
+        private static final String TAG = "ImageDownloader";
+
+        ImageDownloader(ImageView target) {
+            _target = target;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
+            }
+
+            String targetUrl = params[0];
+            Bitmap result = null;
+            try {
+                URL u = new URL(targetUrl);
+                InputStream s = null;
+                try {
+                    s = u.openStream();
+                    result = BitmapFactory.decodeStream(s);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage());
+                    e.printStackTrace();
+                } finally {
+                    if (s != null) {
+                        s.close();
+                    }
+                }
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            _target.setImageBitmap(result);
+        }
+    }
 }
