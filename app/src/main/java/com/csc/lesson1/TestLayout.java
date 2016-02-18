@@ -20,7 +20,7 @@ public class TestLayout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_layout);
         new ImageDownloader((ImageView) findViewById(R.id.businessImage))
-                .execute(String.valueOf(R.string.BusinessCardURL));
+                .execute(getString(R.string.BusinessCardURL));
     }
 
     private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
