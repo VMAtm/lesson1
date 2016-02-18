@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.LruCache;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -12,10 +13,13 @@ import java.net.URL;
 
 class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
     private final ImageView _target;
+    private final LruCache<String, Bitmap> _cardCache;
     private static final String TAG = "ImageDownloader";
+    private String _targetUrl;
 
-    ImageDownloader(ImageView target) {
+    ImageDownloader(ImageView target, LruCache<String, Bitmap> cardCache) {
         _target = target;
+        _cardCache = cardCache;
     }
 
     @Override
@@ -25,6 +29,7 @@ class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
         }
 
         String targetUrl = params[0];
+        _targetUrl = targetUrl;
         Bitmap result = null;
         try {
             URL u = new URL(targetUrl);
@@ -50,5 +55,6 @@ class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap result) {
         _target.setImageBitmap(result);
+        _cardCache.put(_targetUrl, result);
     }
 }

@@ -21,13 +21,17 @@ public class TestLayout extends AppCompatActivity {
             }
         };
         setContentView(R.layout.activity_test_layout);
-
-        ImageView imageView = (ImageView) findViewById(R.id.businessImage);
-        getBusinessCardPhoto(imageView);
+        getBusinessCardPhoto();
     }
 
-    private void getBusinessCardPhoto(ImageView imageView) {
-        ImageDownloader downloadTask = new ImageDownloader(imageView);
-        downloadTask.execute(getString(R.string.BusinessCardURL));
+    private void getBusinessCardPhoto() {
+        ImageView imageView = (ImageView) findViewById(R.id.businessImage);
+        String token = getString(R.string.BusinessCardURL);
+        if (cardCache.get(token) != null) {
+            imageView.setImageBitmap(cardCache.get(token));
+        } else {
+            ImageDownloader downloadTask = new ImageDownloader(imageView, cardCache);
+            downloadTask.execute(token);
+        }
     }
 }
